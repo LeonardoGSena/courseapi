@@ -1,4 +1,4 @@
-package com.leonardo.courseproject.model;
+package com.leonardo.courseproject.domain.models;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,6 +12,7 @@ public class Category {
     private Long id;
     @Column(name = "category_name")
     private String name;
+
 
     public Category() {
     }
