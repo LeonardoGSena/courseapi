@@ -31,7 +31,7 @@ public class CategoryServiceTest {
     @Test
     public void deleteShouldDoNothingWhenIDExists() {
         assertDoesNotThrow(() -> {
-            service.delete(existingId);
+            service.deleteCategory(existingId);
         });
 
         Mockito.verify(repository, Mockito.times(1)).deleteById(existingId);
