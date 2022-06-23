@@ -26,6 +26,8 @@ public class CategoryServiceTest {
     @BeforeEach
     void setUp() throws Exception {
         existingId = 1L;
+
+        Mockito.doNothing().when(repository).deleteById(existingId);
     }
 
     @Test
