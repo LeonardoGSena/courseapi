@@ -1,1 +1,1 @@
-INSERT INTO tb_category (category_name) VALUES ('Tv LG Full HD');
+INSERT INTO tb_category (category_name) VALUES ('Technology');
