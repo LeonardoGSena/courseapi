@@ -1,6 +1,8 @@
 package com.leonardo.courseproject.domain.services;
 
 import com.leonardo.courseproject.domain.repositories.CategoryRepository;
+import com.leonardo.courseproject.domain.services.exceptions.DataBaseException;
+import com.leonardo.courseproject.domain.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 public class CategoryServiceTest {
@@ -24,14 +27,17 @@ public class CategoryServiceTest {
 
     private Long existingId;
     private Long nonExistingId;
+    private Long dependentId;
 
     @BeforeEach
     void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 2L;
+        dependentId = 4L;
 
-        Mockito.doNothing().when(repository).deleteById(existingId);
-        Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
+        doNothing().when(repository).deleteById(existingId);
+        doThrow(ResourceNotFoundException.class).when(repository).deleteById(nonExistingId);
+        doThrow(DataBaseException.class).when(repository).deleteById(dependentId);
     }
 
     @Test
@@ -39,14 +45,22 @@ public class CategoryServiceTest {
         assertDoesNotThrow(() -> {
             service.deleteCategory(existingId);
         });
-        Mockito.verify(repository, Mockito.times(1)).deleteById(existingId);
+        verify(repository, times(1)).deleteById(existingId);
     }
 
     @Test
-    public void deleteShouldThrowDataAccessExceptionWhenIdDoesNotExists() {
-        assertThrows(EmptyResultDataAccessException.class, () -> {
+    public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
+        assertThrows(ResourceNotFoundException.class, () -> {
             service.deleteCategory(nonExistingId);
         });
-        Mockito.verify(repository, Mockito.times(1)).deleteById(nonExistingId);
+        verify(repository, times(1)).deleteById(nonExistingId);
+    }
+
+    @Test
+    public void deleteShouldThrowDataBaseExceptionWhenDependentId() {
+        assertThrows(DataBaseException.class, () -> {
+            service.deleteCategory(dependentId);
+        });
+        verify(repository, times(1)).deleteById(dependentId);
     }
 }
