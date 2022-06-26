@@ -11,15 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +31,7 @@ public class CategoryServiceTest {
     private CategoryService service;
 
     @Mock
-    private CategoryRepository repository;
+    private CategoryRepository categoryRepository;
 
     private Long existingId;
     private Long nonExistingId;
@@ -49,15 +47,18 @@ public class CategoryServiceTest {
         category = Factory.createCategory();
         pageRequest = new PageImpl<>(List.of(category));
 
-        when(repository.findAll((Pageable) ArgumentMatchers.any())).thenReturn((Page<Category>) pageRequest);
-        when(repository.findById(existingId)).thenReturn(Optional.of(category));
-        when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+        when(categoryRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn((Page<Category>) pageRequest);
+        when(categoryRepository.findById(existingId)).thenReturn(Optional.of(category));
+        when(categoryRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
-        when(repository.save(ArgumentMatchers.any())).thenReturn(category);
+        when(categoryRepository.getOne(existingId)).thenReturn(category);
+        when(categoryRepository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 
-        doNothing().when(repository).deleteById(existingId);
-        doThrow(ResourceNotFoundException.class).when(repository).deleteById(nonExistingId);
-        doThrow(DataBaseException.class).when(repository).deleteById(dependentId);
+        when(categoryRepository.save(ArgumentMatchers.any())).thenReturn(category);
+
+        doNothing().when(categoryRepository).deleteById(existingId);
+        doThrow(ResourceNotFoundException.class).when(categoryRepository).deleteById(nonExistingId);
+        doThrow(DataBaseException.class).when(categoryRepository).deleteById(dependentId);
     }
 
     @Test
@@ -87,11 +88,24 @@ public class CategoryServiceTest {
     }
 
     @Test
+    void updateShouldReturnACategoryWhenIdExists() {
+        Category category = service.updateCategory(existingId, this.category);
+        assertNotNull(category);
+    }
+
+    @Test
+    void updateShouldResourceNotFoundWhenIdDoesNotExist() {
+        assertThrows(ResourceNotFoundException.class, () -> {
+            Category category = service.updateCategory(nonExistingId, this.category);
+        });
+    }
+
+    @Test
     void deleteShouldDoNothingWhenIDExists() {
         assertDoesNotThrow(() -> {
             service.deleteCategory(existingId);
         });
-        verify(repository, times(1)).deleteById(existingId);
+        verify(categoryRepository, times(1)).deleteById(existingId);
     }
 
     @Test
@@ -99,7 +113,7 @@ public class CategoryServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> {
             service.deleteCategory(nonExistingId);
         });
-        verify(repository, times(1)).deleteById(nonExistingId);
+        verify(categoryRepository, times(1)).deleteById(nonExistingId);
     }
 
     @Test
@@ -107,6 +121,6 @@ public class CategoryServiceTest {
         assertThrows(DataBaseException.class, () -> {
             service.deleteCategory(dependentId);
         });
-        verify(repository, times(1)).deleteById(dependentId);
+        verify(categoryRepository, times(1)).deleteById(dependentId);
     }
 }

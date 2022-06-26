@@ -9,10 +9,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+@Service
 public class CategoryService {
 
     @Autowired
@@ -35,6 +38,22 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
+    @Transactional
+    public Category updateCategory(Long id, Category category) {
+        try {
+            Category newCategory = categoryRepository.getOne(id);
+            updateData(newCategory, category);
+            return categoryRepository.save(newCategory);
+
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Id not founded " + id);
+        }
+    }
+
+    private void updateData(Category newCategory, Category category) {
+        newCategory.setName(category.getName());
+    }
+
     public void deleteCategory(Long id) {
         try {
             categoryRepository.deleteById(id);
@@ -45,5 +64,4 @@ public class CategoryService {
         }
 
     }
-
 }
