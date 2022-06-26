@@ -1,11 +1,14 @@
 package com.leonardo.courseproject.domain.services;
 
+import com.leonardo.courseproject.domain.models.Category;
 import com.leonardo.courseproject.domain.repositories.CategoryRepository;
 import com.leonardo.courseproject.domain.services.exceptions.DataBaseException;
 import com.leonardo.courseproject.domain.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 public class CategoryService {
 
@@ -21,5 +24,10 @@ public class CategoryService {
             throw new DataBaseException("Integrity violation");
         }
 
+    }
+
+    public Page<Category> findAllPaged(PageRequest pageRequest) {
+        Page<Category> categories = categoryRepository.findAll(pageRequest);
+        return categories;
     }
 }
