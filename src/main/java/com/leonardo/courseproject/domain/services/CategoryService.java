@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public class CategoryService {
 
     @Autowired
@@ -20,6 +22,12 @@ public class CategoryService {
     public Page<Category> findAllPaged(PageRequest pageRequest) {
         Page<Category> categories = categoryRepository.findAll(pageRequest);
         return categories;
+    }
+
+    @Transactional(readOnly = true)
+    public Category findById(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        return category.orElseThrow(() -> new ResourceNotFoundException("Category not founded"));
     }
 
     @Transactional
@@ -37,4 +45,5 @@ public class CategoryService {
         }
 
     }
+
 }

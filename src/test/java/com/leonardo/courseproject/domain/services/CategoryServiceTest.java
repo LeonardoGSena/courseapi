@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -49,7 +50,11 @@ public class CategoryServiceTest {
         pageRequest = new PageImpl<>(List.of(category));
 
         when(repository.findAll((Pageable) ArgumentMatchers.any())).thenReturn((Page<Category>) pageRequest);
+        when(repository.findById(existingId)).thenReturn(Optional.of(category));
+        when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+
         when(repository.save(ArgumentMatchers.any())).thenReturn(category);
+
         doNothing().when(repository).deleteById(existingId);
         doThrow(ResourceNotFoundException.class).when(repository).deleteById(nonExistingId);
         doThrow(DataBaseException.class).when(repository).deleteById(dependentId);
@@ -60,6 +65,19 @@ public class CategoryServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<Category> result = service.findAllPaged(pageRequest);
        assertNotNull(result);
+    }
+
+    @Test
+    void findByIdShouldReturnCategoryWhenIdExists() {
+        Category category = service.findById(existingId);
+        assertNotNull(category);
+    }
+
+    @Test
+    void findByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+        assertThrows(ResourceNotFoundException.class, () -> {
+            service.findById(nonExistingId);
+        });
     }
 
     @Test
