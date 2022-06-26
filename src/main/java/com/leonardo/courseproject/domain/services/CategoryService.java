@@ -9,11 +9,23 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 public class CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Transactional(readOnly = true)
+    public Page<Category> findAllPaged(PageRequest pageRequest) {
+        Page<Category> categories = categoryRepository.findAll(pageRequest);
+        return categories;
+    }
+
+    @Transactional
+    public Category insertCategory(Category category) {
+        return categoryRepository.save(category);
+    }
 
     public void deleteCategory(Long id) {
         try {
@@ -24,10 +36,5 @@ public class CategoryService {
             throw new DataBaseException("Integrity violation");
         }
 
-    }
-
-    public Page<Category> findAllPaged(PageRequest pageRequest) {
-        Page<Category> categories = categoryRepository.findAll(pageRequest);
-        return categories;
     }
 }

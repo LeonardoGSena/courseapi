@@ -49,7 +49,7 @@ public class CategoryServiceTest {
         pageRequest = new PageImpl<>(List.of(category));
 
         when(repository.findAll((Pageable) ArgumentMatchers.any())).thenReturn((Page<Category>) pageRequest);
-
+        when(repository.save(ArgumentMatchers.any())).thenReturn(category);
         doNothing().when(repository).deleteById(existingId);
         doThrow(ResourceNotFoundException.class).when(repository).deleteById(nonExistingId);
         doThrow(DataBaseException.class).when(repository).deleteById(dependentId);
@@ -60,6 +60,12 @@ public class CategoryServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<Category> result = service.findAllPaged(pageRequest);
        assertNotNull(result);
+    }
+
+    @Test
+    void ItShouldCreateANewCategory() {
+        Category save = service.insertCategory(category);
+        assertNotNull(save);
     }
 
     @Test
