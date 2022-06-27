@@ -46,4 +46,14 @@ public class CategoryControllerTest {
 
         result.andExpect(status().isOk());
     }
+
+    @Test
+    void findByIdShouldReturnCategory() throws Exception {
+        ResultActions result = mockMvc.perform(get("/categories/1")
+                .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+
+    }
+
 }
