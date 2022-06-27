@@ -20,7 +20,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<Page<Category>> findAll(
+    public ResponseEntity<Page<Category>> findAllCategories(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linerPerPage,
             @RequestParam(value = "direction", defaultValue = "ASC") String direction,
