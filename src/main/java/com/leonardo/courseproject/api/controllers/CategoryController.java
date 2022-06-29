@@ -8,6 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/categories")
@@ -32,5 +35,13 @@ public class CategoryController {
     public ResponseEntity<Category> findById(@PathVariable Long id) {
         Category category = categoryService.findById(id);
         return ResponseEntity.ok().body(category);
+    }
+
+    @PostMapping
+    public ResponseEntity<Category> insertCategory(@RequestBody Category category) {
+        category = categoryService.insertCategory(category);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(category.getId()).toUri();
+        return ResponseEntity.created(uri).body(category);
     }
 }
