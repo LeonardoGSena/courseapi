@@ -6,24 +6,30 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_category")
-public class Category {
+@Table(name = "tb_product")
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "category_name")
+    @Column(name = "product_name")
     private String name;
+    private Double price;
 
-    @ManyToMany(mappedBy = "categories")
-    private List<Product> products = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "PRODUCT_CATEGORY",
+    joinColumns = @JoinColumn(name = "product_id"),
+    inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<>();
 
-    public Category() {
+    public Product() {
     }
 
-    public Category(Long id, String name) {
+    public Product(Long id, String name, Double price) {
         this.id = id;
         this.name = name;
+        this.price = price;
     }
 
     public Long getId() {
@@ -42,16 +48,24 @@ public class Category {
         this.name = name;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return Objects.equals(id, category.id);
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
     }
 
     @Override
