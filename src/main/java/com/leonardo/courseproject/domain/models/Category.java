@@ -1,5 +1,7 @@
 package com.leonardo.courseproject.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ public class Category {
     @Column(name = "category_name")
     private String name;
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "categories")
     private List<Product> products = new ArrayList<>();
 
