@@ -26,7 +26,7 @@ public class Product {
     )
     private List<Category> categories = new ArrayList<>();
 
-    public Product() {
+    public Product(Product x, List<Category> categories) {
     }
 
     public Product(Long id, String name, Double price) {

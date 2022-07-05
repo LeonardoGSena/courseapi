@@ -6,8 +6,7 @@ import com.leonardo.courseproject.domain.models.Product;
 public class Factory {
 
     public static Category createCategory() {
-        Category category = new Category(1L, "Electronics");
-        return category;
+        return  new Category(2L, "TV");
     }
 
     public static Product createProduct() {
