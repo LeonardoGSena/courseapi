@@ -15,3 +15,4 @@ INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 2);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (5, 1);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (6, 1);
 
+

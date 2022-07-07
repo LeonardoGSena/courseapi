@@ -1,8 +1,14 @@
 package com.leonardo.courseproject.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,21 +24,27 @@ public class Product {
     private String name;
     private Double price;
 
-    @JsonBackReference
+
     @ManyToMany
     @JoinTable(name = "tb_product_category",
     joinColumns = @JoinColumn(name = "product_id"),
-    inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
+    inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<>();
 
-    public Product(Product x, List<Category> categories) {
+    public Product() {
     }
 
     public Product(Long id, String name, Double price) {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    public Product(Product entity, List<Category> categories) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.price = entity.getPrice();
+        categories.forEach(category -> this.categories.add(new Category(category.getId(), category.getName())));
     }
 
     public Long getId() {
