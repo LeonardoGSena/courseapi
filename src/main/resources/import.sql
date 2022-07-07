@@ -15,4 +15,9 @@ INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 2);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (5, 1);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (6, 1);
 
+INSERT INTO tb_state (state_name) VALUES ('São Paulo');
+INSERT INTO tb_state (state_name) VALUES ('Minas Gerais');
 
+INSERT INTO tb_city (city_name, state_id) VALUES ('Campinas', 1);
+INSERT INTO tb_city (city_name, state_id) VALUES ('Uberlândia', 2);
+INSERT INTO tb_city (city_name, state_id) VALUES ('Campos do Jordão', 1);
