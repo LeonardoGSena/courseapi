@@ -21,3 +21,12 @@ INSERT INTO tb_state (state_name) VALUES ('Minas Gerais');
 INSERT INTO tb_city (city_name, state_id) VALUES ('Campinas', 1);
 INSERT INTO tb_city (city_name, state_id) VALUES ('Uberlândia', 2);
 INSERT INTO tb_city (city_name, state_id) VALUES ('Campos do Jordão', 1);
+
+INSERT INTO tb_client (client_name, email, EIN_or_IDno, client_type) VALUES ('Xuxa da Silva', 'xuxa@gmail.com', '11122244455', 1);
+
+INSERT INTO tb_address (street, number, complement, province, ziP_code, client_id, city_id) VALUES ('Rua das Palmeiras', '100', 'Casa', 'Setúbal', '55444330', 1, 3);
+INSERT INTO tb_address (street, number, complement, province, zip_code, client_id, city_id) VALUES ('Rua das flores', '300', 'Ap 888', 'Graças', '88554556', 1, 1);
+
+
+
+
