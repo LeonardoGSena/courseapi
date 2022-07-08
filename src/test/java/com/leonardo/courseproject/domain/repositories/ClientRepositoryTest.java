@@ -5,13 +5,14 @@ import com.leonardo.courseproject.domain.models.City;
 import com.leonardo.courseproject.domain.models.Client;
 import com.leonardo.courseproject.domain.models.State;
 import com.leonardo.courseproject.domain.models.enums.ClientType;
-import com.leonardo.courseproject.tests.Factory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.EmptyResultDataAccessException;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,10 +23,13 @@ public class ClientRepositoryTest {
     private ClientRepository clientRepository;
 
     private Long totalClients;
-
+    private Long existId;
+    private Long nonExistId;
     @BeforeEach
     void Setup() throws Exception {
         totalClients = 0L;
+        existId = 1L;
+        nonExistId = 111L;
     }
 
     @Test
@@ -43,5 +47,22 @@ public class ClientRepositoryTest {
 
         assertNotNull(client.getId());
         assertEquals(totalClients + 1, client.getId());
+    }
+
+    @Test
+    @DisplayName("It should Delete client when id exists")
+    void itShouldDeleteClientWhenIdExists() {
+        clientRepository.deleteById(existId);
+        Optional<Client> client = clientRepository.findById(existId);
+
+        assertFalse(client.isPresent(), "It should return false");
+    }
+
+    @Test
+    @DisplayName("It should throw EmptyResultDataAccessException when id does not exist")
+    void itShouldThrowEmptyResultDataAccessExceptionWhenIdDoesNotExist() {
+        assertThrows(EmptyResultDataAccessException.class, () -> {
+           clientRepository.deleteById(nonExistId);
+        });
     }
 }
